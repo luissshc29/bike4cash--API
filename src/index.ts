@@ -5,6 +5,7 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 
 // Express and Http Server setup
 const app = express();
@@ -14,6 +15,7 @@ const httpServer = http.createServer(app);
 const server = new ApolloServer({
   schema,
   cache: "bounded",
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
 // Server Start
