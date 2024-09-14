@@ -52,9 +52,7 @@ export async function checkIfBikeIsRecommended(id: number): Promise<boolean> {
       (a: { bikeId: number }, b: { bikeId: number }) => a.bikeId - b.bikeId
     );
 
-  const groupedBikeRatings = allBikeRatingsNumbers.reduce<{
-    [bikeId: number]: { totalRating: number; count: number };
-  }>(
+  const groupedBikeRatings = allBikeRatingsNumbers.reduce(
     (
       acc: { [bikeId: number]: { totalRating: number; count: number } },
       { bikeId, rating }: { bikeId: number; rating: number }
