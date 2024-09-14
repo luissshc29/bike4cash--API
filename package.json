@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev -r dotenv/config --transpile-only --no-notify --exit-child src/index.ts",
-    "generate": "ts-node --transpile-only src/schema.ts"
+    "generate": "ts-node --transpile-only src/schema.ts",
+    "build": "prisma generate"
   },
   "keywords": [],
   "author": "",
