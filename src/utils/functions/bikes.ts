@@ -1,6 +1,8 @@
-import { bikeRatings, PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+type BikeRating = Prisma.bikeRatingsGetPayload<{}>;
 
 export async function getBikeRatings(id?: number) {
   const bikeRatingsFull = id
@@ -18,7 +20,7 @@ export async function getAverageBikeRating(id: number) {
   const bikeRatingsFull = await getBikeRatings(id);
 
   const bikeRatingsNumbers = bikeRatingsFull.map(
-    (item: bikeRatings) => item.rating
+    (item: BikeRating) => item.rating
   );
 
   var averageBikeRating = 0;
@@ -34,7 +36,7 @@ export async function checkIfBikeIsRecommended(id: number) {
   const allBikeRatingsFull = await getBikeRatings();
 
   const allBikeRatingsNumbers = allBikeRatingsFull
-    .map((item: bikeRatings) => {
+    .map((item: BikeRating) => {
       return {
         bikeId: item.bikeId,
         rating: item.rating,
