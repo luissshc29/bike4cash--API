@@ -38,44 +38,50 @@ export async function getAverageBikeRating(id: number) {
   return Number(averageBikeRating.toFixed(1));
 }
 
-export async function checkIfBikeIsRecommended(id: number) {
+export async function checkIfBikeIsRecommended(id: number): Promise<boolean> {
   const allBikeRatingsFull = await getBikeRatings();
 
   const allBikeRatingsNumbers = allBikeRatingsFull
     .map((item: BikeRating) => {
       return {
-        bikeId: item.bikeId,
-        rating: item.rating,
+        bikeId: Number(item.bikeId),
+        rating: Number(item.rating),
       };
     })
-    .sort((item) => item.bikeId);
+    .sort(
+      (a: { bikeId: number }, b: { bikeId: number }) => a.bikeId - b.bikeId
+    );
 
   const groupedBikeRatings = allBikeRatingsNumbers.reduce<{
     [bikeId: number]: { totalRating: number; count: number };
-  }>((acc, { bikeId, rating }) => {
-    if (acc[bikeId]) {
-      acc[bikeId].totalRating += rating;
-      acc[bikeId].count += 1;
-    } else {
-      acc[bikeId] = { totalRating: rating, count: 1 };
-    }
-    return acc;
-  }, {});
+  }>(
+    (
+      acc: { [bikeId: number]: { totalRating: number; count: number } },
+      { bikeId, rating }: { bikeId: number; rating: number }
+    ) => {
+      if (acc[bikeId]) {
+        acc[bikeId].totalRating += rating;
+        acc[bikeId].count += 1;
+      } else {
+        acc[bikeId] = { totalRating: rating, count: 1 };
+      }
+      return acc;
+    },
+    {}
+  );
 
   const result = Object.keys(groupedBikeRatings)
-    .map((bikeId) => ({
-      bikeId: Number(bikeId),
-      rating:
-        groupedBikeRatings[Number(bikeId)].totalRating /
-        groupedBikeRatings[Number(bikeId)].count,
-    }))
+    .map((bikeId) => {
+      return {
+        bikeId: Number(bikeId),
+        rating:
+          groupedBikeRatings[Number(bikeId)].totalRating /
+          groupedBikeRatings[Number(bikeId)].count,
+      };
+    })
     .sort((a, b) => b.rating - a.rating);
 
   const recommendedBikes = result.slice(0, 4);
 
-  if (recommendedBikes.map((item) => item.bikeId).includes(id)) {
-    return true;
-  }
-
-  return false;
+  return recommendedBikes.map((item) => item.bikeId).includes(id);
 }
