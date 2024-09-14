@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { bikeRatings, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -17,7 +17,9 @@ export async function getBikeRatings(id?: number) {
 export async function getAverageBikeRating(id: number) {
   const bikeRatingsFull = await getBikeRatings(id);
 
-  const bikeRatingsNumbers = bikeRatingsFull.map((item) => item.rating);
+  const bikeRatingsNumbers = bikeRatingsFull.map(
+    (item: bikeRatings) => item.rating
+  );
 
   var averageBikeRating = 0;
 
@@ -32,7 +34,7 @@ export async function checkIfBikeIsRecommended(id: number) {
   const allBikeRatingsFull = await getBikeRatings();
 
   const allBikeRatingsNumbers = allBikeRatingsFull
-    .map((item) => {
+    .map((item: bikeRatings) => {
       return {
         bikeId: item.bikeId,
         rating: item.rating,
@@ -41,10 +43,7 @@ export async function checkIfBikeIsRecommended(id: number) {
     .sort((item) => item.bikeId);
 
   const groupedBikeRatings = allBikeRatingsNumbers.reduce<{
-    [bikeId: number]: {
-      totalRating: number;
-      count: number;
-    };
+    [bikeId: number]: { totalRating: number; count: number };
   }>((acc, { bikeId, rating }) => {
     if (acc[bikeId]) {
       acc[bikeId].totalRating += rating;
