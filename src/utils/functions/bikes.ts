@@ -1,8 +1,14 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-type BikeRating = Prisma.bikeRatingsGetPayload<{}>;
+type BikeRating = {
+  id: number;
+  username: string;
+  bikeId: number;
+  rating: number;
+  message: string;
+};
 
 export async function getBikeRatings(id?: number) {
   const bikeRatingsFull = id
