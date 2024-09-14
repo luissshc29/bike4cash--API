@@ -8,7 +8,7 @@
     "dev": "ts-node-dev -r dotenv/config --transpile-only --no-notify --exit-child src/index.ts",
     "generate": "ts-node --transpile-only src/schema.ts",
     "build": "prisma generate",
-    "postinstall": "prisma generate && prisma migrate deploy"
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
