@@ -185,7 +185,7 @@ To run the API locally, follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/bike4cash-api.git
+git clone https://github.com/luissshc29/bike4cash--API.git
 ```
 
 2. Install dependencies:
@@ -205,3 +205,7 @@ npm run dev
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue for any bugs or feature requests.
+
+## License
+
+This project is licensed under the MIT License.
