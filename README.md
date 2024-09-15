@@ -6,9 +6,7 @@ This is the API for Bike4Cash, which allows users to browse bikes, get ratings, 
 
 The GraphQL API is available at:
 
-```
-https://bike4cash-api.vercel.app/
-```
+[https://bike4cash-api.vercel.app/](https://bike4cash-api.vercel.app/)
 
 ## Resolvers
 
