@@ -1,10 +1,10 @@
 import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
 import {
   checkIfBikeIsRecommended,
-  getAverageBikeRating,
+  getBike,
   getBikeRatings,
+  getBikes,
 } from "../utils/functions/bikes";
-import { bikes } from "../utils/constants/bikes";
 
 export const Bike = objectType({
   name: "Bike",
@@ -18,11 +18,11 @@ export const Bike = objectType({
       type: "RatingInfo",
       async resolve(parent) {
         const { id } = parent;
-        const averageRating = await getAverageBikeRating(id);
+        const averageRating = await getBike(id);
         const ratingList = await getBikeRatings(id);
 
         return {
-          average: averageRating,
+          average: averageRating?.average_rating as number,
           list: ratingList,
         };
       },
@@ -71,6 +71,8 @@ export const BikeQuery = extendType({
       async resolve(_, args, __) {
         const { category, maxPrice, search } = args;
 
+        const bikes = await getBikes();
+
         var temp = await Promise.all(
           bikes.map(async (item) => {
             return {
@@ -110,8 +112,8 @@ export const BikeQuery = extendType({
       args: {
         id: nonNull(intArg()),
       },
-      resolve(p, args, ctx) {
-        const bike = bikes.find((bike) => bike.id === args.id);
+      async resolve(p, args, ctx) {
+        const bike = await getBike(args.id);
 
         if (!bike) {
           throw new Error(`Bike with ID ${args.id} not found`);

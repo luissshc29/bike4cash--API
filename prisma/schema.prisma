@@ -14,3 +14,12 @@ model bikeRatings {
   rating   Int
   message  String
 }
+
+model bikes {
+  id             Int    @id @default(autoincrement())
+  category       String
+  image          String
+  name           String
+  price          Float
+  average_rating Float
+}

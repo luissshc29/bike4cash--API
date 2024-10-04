@@ -1,4 +1,4 @@
-import { extendType, intArg, objectType, nonNull, stringArg } from "nexus";
+import { extendType, objectType, nonNull, stringArg } from "nexus";
 import { categories } from "../utils/constants/categories";
 
 export const Category = objectType({
@@ -6,7 +6,6 @@ export const Category = objectType({
   definition(t) {
     t.nonNull.int("id");
     t.nonNull.string("name");
-    t.nonNull.string("color");
   },
 });
 

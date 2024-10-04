@@ -36,7 +36,6 @@ export interface NexusGenObjects {
     price: number; // Int!
   }
   Category: { // root type
-    color: string; // String!
     id: number; // Int!
     name: string; // String!
   }
@@ -74,7 +73,6 @@ export interface NexusGenFieldTypes {
     recommended: boolean; // Boolean!
   }
   Category: { // field return type
-    color: string; // String!
     id: number; // Int!
     name: string; // String!
   }
@@ -107,7 +105,6 @@ export interface NexusGenFieldTypeNames {
     recommended: 'Boolean'
   }
   Category: { // field return type name
-    color: 'String'
     id: 'Int'
     name: 'String'
   }

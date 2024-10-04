@@ -2,84 +2,36 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-type BikeRating = {
-  id: number;
-  username: string;
-  bikeId: number;
-  rating: number;
-  message: string;
-};
+export async function getBikes() {
+  const bikes = await prisma.bikes.findMany();
 
-export async function getBikeRatings(id?: number) {
-  const bikeRatingsFull = id
-    ? await prisma.bikeRatings.findMany({
-        where: {
-          bikeId: id,
-        },
-      })
-    : await prisma.bikeRatings.findMany();
-
-  return bikeRatingsFull;
+  return bikes;
 }
 
-export async function getAverageBikeRating(id: number) {
-  const bikeRatingsFull = await getBikeRatings(id);
+export async function getBike(id: number) {
+  const bike = await prisma.bikes.findUnique({
+    where: {
+      id,
+    },
+  });
 
-  const bikeRatingsNumbers = bikeRatingsFull.map(
-    (item: BikeRating) => item.rating
-  );
+  return bike;
+}
 
-  var averageBikeRating = 0;
+export async function getBikeRatings(id: number) {
+  const bikeRatings = await prisma.bikeRatings.findMany({
+    where: { bikeId: id },
+  });
 
-  for (let i = 0; i < bikeRatingsNumbers.length; i++) {
-    averageBikeRating += bikeRatingsNumbers[i] / bikeRatingsNumbers.length;
-  }
-
-  return Number(averageBikeRating.toFixed(1));
+  return bikeRatings || [];
 }
 
 export async function checkIfBikeIsRecommended(id: number): Promise<boolean> {
-  const allBikeRatingsFull = await getBikeRatings();
-
-  const allBikeRatingsNumbers = allBikeRatingsFull
-    .map((item: BikeRating) => {
-      return {
-        bikeId: Number(item.bikeId),
-        rating: Number(item.rating),
-      };
-    })
-    .sort(
-      (a: { bikeId: number }, b: { bikeId: number }) => a.bikeId - b.bikeId
-    );
-
-  const groupedBikeRatings = allBikeRatingsNumbers.reduce(
-    (
-      acc: { [bikeId: number]: { totalRating: number; count: number } },
-      { bikeId, rating }: { bikeId: number; rating: number }
-    ) => {
-      if (acc[bikeId]) {
-        acc[bikeId].totalRating += rating;
-        acc[bikeId].count += 1;
-      } else {
-        acc[bikeId] = { totalRating: rating, count: 1 };
-      }
-      return acc;
-    },
-    {}
+  const orderedBikes = (await getBikes()).sort(
+    (a, b) => b.average_rating - a.average_rating
   );
 
-  const result = Object.keys(groupedBikeRatings)
-    .map((bikeId) => {
-      return {
-        bikeId: Number(bikeId),
-        rating:
-          groupedBikeRatings[Number(bikeId)].totalRating /
-          groupedBikeRatings[Number(bikeId)].count,
-      };
-    })
-    .sort((a, b) => b.rating - a.rating);
+  const isRecommended = orderedBikes.findIndex((item) => item.id === id) <= 3;
 
-  const recommendedBikes = result.slice(0, 4);
-
-  return recommendedBikes.map((item) => item.bikeId).includes(id);
+  return isRecommended;
 }

@@ -13,7 +13,6 @@ type Bike {
 }
 
 type Category {
-  color: String!
   id: Int!
   name: String!
 }
